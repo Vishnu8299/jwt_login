@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import jakarta.annotation.PostConstruct;
 
 import java.security.Key;
 import java.util.Date;
@@ -13,16 +14,16 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    @Value("${spring.security.jwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${spring.security.jwt.expiration}")
+    @Value("${jwt.expiration}")
     private long expiration;
 
-    private final Key signingKey;
+    private Key signingKey;
 
-    public JwtUtil(@Value("${spring.security.jwt.secret}") String secret) {
-        this.secret = secret;
+    @PostConstruct
+    public void init() {
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
@@ -45,13 +46,18 @@ public class JwtUtil {
                 .getBody();
     }
 
+    // Extract username (subject) from token
+    public String extractUsername(String token) {
+        return extractClaims(token).getSubject();
+    }
+
     // Validate token
     public boolean isTokenValid(String token, String username) {
-        final String extractedUsername = extractClaims(token).getSubject();
+        final String extractedUsername = extractUsername(token);
         return extractedUsername.equals(username) && !isTokenExpired(token);
     }
 
-    // Check if token expired
+    // Check if token is expired
     private boolean isTokenExpired(String token) {
         final Date expiration = extractClaims(token).getExpiration();
         return expiration.before(new Date());

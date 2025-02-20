@@ -16,19 +16,26 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http.csrf().disable()
-                .authorizeExchange()
-                .pathMatchers("/auth/**").permitAll()
-                .anyExchange().authenticated()
-                .and()
-                .addFilterAt(new JwtAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, JwtAuthenticationFilter jwtFilter) {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeExchange(exchanges -> exchanges
+                    .pathMatchers("/api/auth/**", "/actuator/**").permitAll()
+                    .anyExchange().authenticated()
+                )
+                .addFilterAt(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .formLogin(formLogin -> formLogin.disable())
                 .build();
     }
 
     @Bean
-    public ReactiveAuthenticationManager authenticationManager(CustomUserDetailsService userDetailsService) {
-        return new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+    public ReactiveAuthenticationManager authenticationManager(CustomUserDetailsService userDetailsService,
+                                                            PasswordEncoder passwordEncoder) {
+        UserDetailsRepositoryReactiveAuthenticationManager authenticationManager =
+                new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+        authenticationManager.setPasswordEncoder(passwordEncoder);
+        return authenticationManager;
     }
 
     @Bean

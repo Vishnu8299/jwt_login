@@ -6,14 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.1</version>
+        <version>3.2.1</version>
         <relativePath/>
     </parent>
 
     <groupId>com.example</groupId>
     <artifactId>jwtdemo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>jwtdemo</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -21,6 +20,12 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!-- WebFlux Starter for reactive web applications -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -56,6 +61,17 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
         </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+        <!-- Spring Data Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+        </dependency>
 
         <!-- Spring Boot DevTools for easier development -->
         <dependency>
@@ -70,6 +86,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Mail Starter for email sending -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
         <!-- Spring Boot Starter Test for unit and integration testing -->
@@ -93,7 +115,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
