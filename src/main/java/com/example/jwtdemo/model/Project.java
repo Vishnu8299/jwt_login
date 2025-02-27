@@ -1,6 +1,5 @@
 package com.example.jwtdemo.model;
 
-import com.example.jwtdemo.model.ProjectStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;

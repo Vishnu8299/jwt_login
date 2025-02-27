@@ -19,6 +19,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.Authentication;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -74,7 +75,9 @@ public class ProjectController {
                         .map(bytes -> {
                             Project.ProjectFile projectFile = new Project.ProjectFile();
                             projectFile.setFilename(filePart.filename());
-                            projectFile.setContentType(filePart.headers().getContentType().toString());
+                            projectFile.setContentType(Optional.ofNullable(filePart.headers().getContentType())
+                                .map(Object::toString)
+                                .orElse("application/octet-stream"));
                             projectFile.setData(bytes);
                             projectFile.setSize(bytes.length);
                             logger.info("File processed: {} (size: {} bytes)", 
